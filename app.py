@@ -11,7 +11,7 @@ import requests
 import time
 import os
 # import threading
-
+from ratelimiter import RateLimiter
 
 import ast
 
@@ -34,6 +34,8 @@ def create_file_name(url):
 
 
 @app.route("/", methods=['GET', 'POST'])
+@RateLimiter(max_calls=10, period=60)
+@RateLimiter(max_calls=1000, period=86400)
 def handle_req():
     method = request.method
     if method == "GET":
