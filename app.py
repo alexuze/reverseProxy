@@ -1,8 +1,3 @@
-from asyncore import write
-# from crypt import methods
-from email.policy import default
-from fileinput import filename
-from functools import cache
 from time import sleep
 from flask import Flask, request, jsonify, url_for
 from celery import Celery
@@ -10,7 +5,6 @@ import sys
 import requests
 import time
 import os
-# import threading
 from ratelimiter import RateLimiter
 
 import ast
@@ -30,6 +24,8 @@ def create_file_name(url):
     suffix = url.split("/")[1:]  # get the url without http:
     delimiter = "_"
     filename = delimiter.join(suffix)
+    filename = filename.replace("=", "_")
+    filename = filename.replace("?", "_")
     return "cache"+filename+".txt"
 
 
@@ -76,7 +72,7 @@ def handle_post():
 
 @celery.task(bind=True)
 def execute_post(self, url, data):
-    sleep(20)  # testing
+    # sleep(10)  # testing
     res = requests.post(url, data).json()
     return {'current': 100, 'total': 100, 'status': 'Task completed!',
             'result': res}
@@ -84,7 +80,7 @@ def execute_post(self, url, data):
 
 @celery.task(bind=True)
 def execute_get(self, url):
-    sleep(20)   # testing
+    # sleep(10)   # testing
     res = requests.get(url).json()
     print("received res from remote server")
     save_res_to_cache(res, url)
