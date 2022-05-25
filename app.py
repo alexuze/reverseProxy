@@ -10,7 +10,8 @@ import sys
 import requests
 import time
 import os
-import threading
+# import threading
+
 
 import ast
 
@@ -191,4 +192,6 @@ def delete_file(filename):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        time_to_keep_file = int(sys.argv[1])
     app.run()
